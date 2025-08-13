@@ -6,6 +6,8 @@ import '../../controllers/chat_controller.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_textstyles.dart';
 import '../../core/screen_util_helper.dart';
+import '../../core/app_strings.dart';
+import '../../core/app_values.dart';
 
 class ChatView extends StatefulWidget {
   final String chatId;
@@ -70,19 +72,16 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: ScreenUtilHelper.scaleWidth(24)),
+          icon: Icon(Icons.arrow_back, size: ScreenUtilHelper.scaleWidth(AppValues.fontSizeMedium)),
           onPressed: () => Navigator.pop(context),
+          tooltip: AppStrings.backTooltip,
         ),
         title: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          stream: FirebaseFirestore.instance
-              .collection('users')
-              .doc(widget.otherUserId)
-              .snapshots(),
+          stream: FirebaseFirestore.instance.collection('users').doc(widget.otherUserId).snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData || !snapshot.data!.exists) {
               return const SizedBox.shrink();
@@ -95,21 +94,21 @@ class _ChatViewState extends State<ChatView> {
             return Row(
               children: [
                 CircleAvatar(
-                  radius: ScreenUtilHelper.radius(20),
+                  radius: ScreenUtilHelper.radius(AppValues.avatarRadiusMedium),
                   backgroundImage: (profileImage.isNotEmpty && _isValidUrl(profileImage))
                       ? NetworkImage(profileImage)
                       : null,
                   child: (profileImage.isEmpty || !_isValidUrl(profileImage))
-                      ? Icon(Icons.person, size: ScreenUtilHelper.scaleWidth(20))
+                      ? Icon(Icons.person, size: ScreenUtilHelper.scaleWidth(AppValues.fontSizeMedium))
                       : null,
                 ),
-                SizedBox(width: ScreenUtilHelper.width(10)),
+                SizedBox(width: ScreenUtilHelper.width(AppValues.paddingSmall)),
                 Expanded(
                   child: Text(
                     name,
                     style: AppTextStyles.headline6.copyWith(
                       color: Colors.white,
-                      fontSize: ScreenUtilHelper.fontSize(18),
+                      fontSize: ScreenUtilHelper.fontSize(AppValues.fontSizeLarge),
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -131,9 +130,9 @@ class _ChatViewState extends State<ChatView> {
                 if (!snap.hasData || snap.data!.docs.isEmpty) {
                   return Center(
                     child: Text(
-                      'No messages yet',
+                      AppStrings.noMessagesYet,
                       style: AppTextStyles.bodyText2.copyWith(
-                        fontSize: ScreenUtilHelper.fontSize(14),
+                        fontSize: ScreenUtilHelper.fontSize(AppValues.fontSizeSmall),
                       ),
                     ),
                   );
@@ -145,8 +144,8 @@ class _ChatViewState extends State<ChatView> {
                   controller: _scrollController,
                   reverse: true,
                   padding: EdgeInsets.symmetric(
-                    horizontal: ScreenUtilHelper.width(12),
-                    vertical: ScreenUtilHelper.height(12),
+                    horizontal: ScreenUtilHelper.width(AppValues.paddingMedium),
+                    vertical: ScreenUtilHelper.height(AppValues.paddingMedium),
                   ),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
@@ -158,70 +157,63 @@ class _ChatViewState extends State<ChatView> {
 
                     return Container(
                       margin: EdgeInsets.only(
-                        bottom: ScreenUtilHelper.height(10),
+                        bottom: ScreenUtilHelper.height(AppValues.paddingSmall),
                         left: isMe ? ScreenUtilHelper.width(50) : 0,
                         right: isMe ? 0 : ScreenUtilHelper.width(50),
                       ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment:
+                        isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                         children: [
                           if (!isMe)
                             CircleAvatar(
-                              radius: ScreenUtilHelper.radius(15),
-                              backgroundColor: AppColors.greyLight,
+                              radius: ScreenUtilHelper.radius(AppValues.avatarRadiusSmall),
                               backgroundImage: (senderProfile.isNotEmpty && _isValidUrl(senderProfile))
                                   ? NetworkImage(senderProfile)
                                   : null,
-                              child: senderProfile.isEmpty || !_isValidUrl(senderProfile)
-                                  ? Icon(Icons.person, size: ScreenUtilHelper.scaleWidth(15))
+                              child: (senderProfile.isEmpty || !_isValidUrl(senderProfile))
+                                  ? Icon(Icons.person, size: ScreenUtilHelper.fontSize(AppValues.fontSizeSmall))
                                   : null,
                             ),
-                          if (!isMe) SizedBox(width: ScreenUtilHelper.width(8)),
+                          SizedBox(width: ScreenUtilHelper.width(AppValues.paddingSmall)),
                           Flexible(
                             child: Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal: ScreenUtilHelper.width(14),
-                                vertical: ScreenUtilHelper.height(10),
+                                horizontal: ScreenUtilHelper.width(AppValues.paddingMedium),
+                                vertical: ScreenUtilHelper.height(AppValues.paddingSmall),
                               ),
                               decoration: BoxDecoration(
-                                gradient: isMe
-                                    ? const LinearGradient(
-                                  colors: [AppColors.primary, AppColors.secondary],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                )
-                                    : null,
-                                color: isMe ? null : AppColors.greyLight,
+                                color: isMe ? AppColors.primary : AppColors.greyLight,
                                 borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(ScreenUtilHelper.radius(18)),
-                                  topRight: Radius.circular(ScreenUtilHelper.radius(18)),
-                                  bottomLeft: Radius.circular(ScreenUtilHelper.radius(isMe ? 18 : 0)),
-                                  bottomRight: Radius.circular(ScreenUtilHelper.radius(isMe ? 0 : 18)),
+                                  topLeft: Radius.circular(ScreenUtilHelper.radius(AppValues.borderRadiusMedium)),
+                                  topRight: Radius.circular(ScreenUtilHelper.radius(AppValues.borderRadiusMedium)),
+                                  bottomLeft: Radius.circular(ScreenUtilHelper.radius(isMe ? AppValues.borderRadiusMedium : 0)),
+                                  bottomRight: Radius.circular(ScreenUtilHelper.radius(isMe ? 0 : AppValues.borderRadiusMedium)),
                                 ),
                               ),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     data['text'] ?? '',
-                                    style: isMe
-                                        ? AppTextStyles.chatTextWhite
-                                        : AppTextStyles.chatTextBlack,
-                                  ),
-                                  if (timeString.isNotEmpty)
-                                    Padding(
-                                      padding: EdgeInsets.only(top: ScreenUtilHelper.height(4)),
-                                      child: Text(
-                                        timeString,
-                                        style: AppTextStyles.timestamp(isMe),
-                                      ),
+                                    style: TextStyle(
+                                      color: isMe ? Colors.white : Colors.black87,
+                                      fontSize: ScreenUtilHelper.fontSize(AppValues.fontSizeMedium),
                                     ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: ScreenUtilHelper.height(4)),
+                                    child: Text(
+                                      timeString,
+                                      style: AppTextStyles.timestamp(isMe),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
-                          if (isMe) SizedBox(width: ScreenUtilHelper.width(8)),
+                          if (isMe) SizedBox(width: ScreenUtilHelper.width(AppValues.paddingSmall)),
                         ],
                       ),
                     );
@@ -233,44 +225,36 @@ class _ChatViewState extends State<ChatView> {
           SafeArea(
             child: Container(
               padding: EdgeInsets.symmetric(
-                horizontal: ScreenUtilHelper.width(12),
-              ).copyWith(bottom: ScreenUtilHelper.height(8)),
-              color: AppColors.background,
+                horizontal: ScreenUtilHelper.width(AppValues.paddingMedium),
+              ).copyWith(bottom: ScreenUtilHelper.height(AppValues.paddingSmall)),
+              color: Colors.white,
               child: Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: _textController,
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (_) => _sendMessage(),
                       decoration: InputDecoration(
-                        hintText: 'Type a message...',
-                        hintStyle: TextStyle(
-                          fontSize: ScreenUtilHelper.fontSize(14),
-                        ),
-                        filled: true,
-                        fillColor: AppColors.greyLight,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: ScreenUtilHelper.width(16),
-                          vertical: ScreenUtilHelper.height(12),
-                        ),
+                        hintText: AppStrings.typeMessage,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(25)),
-                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(AppValues.borderRadiusMedium)),
+                          borderSide: BorderSide(color: AppColors.primary),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: ScreenUtilHelper.width(AppValues.paddingMedium),
+                          vertical: ScreenUtilHelper.height(AppValues.paddingSmall),
                         ),
                       ),
+                      onSubmitted: (_) => _sendMessage(),
                     ),
                   ),
-                  SizedBox(width: ScreenUtilHelper.width(8)),
-                  Material(
-                    color: AppColors.primary,
-                    shape: const CircleBorder(),
-                    child: IconButton(
-                      icon: Icon(Icons.send, color: Colors.white),
-                      onPressed: _sendMessage,
-                      splashRadius: ScreenUtilHelper.radius(24),
-                      iconSize: ScreenUtilHelper.scaleWidth(20),
+                  IconButton(
+                    icon: Icon(
+                      Icons.send,
+                      color: AppColors.primary,
+                      size: ScreenUtilHelper.fontSize(AppValues.fontSizeXXLarge),
                     ),
+                    onPressed: _sendMessage,
+                    tooltip: AppStrings.sendTooltip,
                   ),
                 ],
               ),

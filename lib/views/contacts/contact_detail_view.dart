@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/contact_controller.dart';
+import '../../core/app_colors.dart';
+import '../../core/app_textstyles.dart';
+import '../../core/app_strings.dart';
 import '../../core/screen_util_helper.dart';
 import '../../models/contact_model.dart';
 import '../../widges/rounded_input_field_widgets.dart';
@@ -28,7 +31,8 @@ class _ContactDetailViewState extends State<ContactDetailView> {
     emailC = TextEditingController(text: widget.contact.email);
     phoneC = TextEditingController(text: widget.contact.phone);
     customFields = Map<String, String>.from(
-        widget.contact.customFields.map((key, value) => MapEntry(key, value.toString())));
+      widget.contact.customFields.map((key, value) => MapEntry(key, value.toString())),
+    );
   }
 
   void _addCustomField() {
@@ -63,13 +67,13 @@ class _ContactDetailViewState extends State<ContactDetailView> {
     final contactsC = Get.find<ContactsController>();
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: AppColors.greyLight,
       appBar: AppBar(
         title: Text(
-          'Contact Details',
-          style: TextStyle(fontSize: ScreenUtilHelper.fontSize(20)),
+          AppStrings.contactDetails,
+          style: AppTextStyles.titleLarge.copyWith(fontSize: ScreenUtilHelper.fontSize(20)),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: AppColors.primary,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -85,11 +89,11 @@ class _ContactDetailViewState extends State<ContactDetailView> {
                 Container(
                   padding: EdgeInsets.all(ScreenUtilHelper.width(24)),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.card,
                     borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(20)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.07),
+                        color: AppColors.shadow,
                         blurRadius: ScreenUtilHelper.scaleAll(15),
                         offset: Offset(0, ScreenUtilHelper.height(6)),
                       ),
@@ -99,28 +103,28 @@ class _ContactDetailViewState extends State<ContactDetailView> {
                     children: [
                       RoundedInputField(
                         controller: nameC,
-                        label: 'Name',
+                        label: AppStrings.name,
                         icon: Icons.person,
                         validator: (v) =>
-                        v == null || v.trim().isEmpty ? 'Please enter a name' : null,
+                        v == null || v.trim().isEmpty ? AppStrings.enterName : null,
                       ),
                       SizedBox(height: ScreenUtilHelper.height(18)),
                       RoundedInputField(
                         controller: emailC,
-                        label: 'Email',
+                        label: AppStrings.email,
                         icon: Icons.email,
                         keyboardType: TextInputType.emailAddress,
                         validator: (v) =>
-                        v == null || !v.contains('@') ? 'Please enter a valid email' : null,
+                        v == null || !v.contains('@') ? AppStrings.enterEmail : null,
                       ),
                       SizedBox(height: ScreenUtilHelper.height(18)),
                       RoundedInputField(
                         controller: phoneC,
-                        label: 'Phone',
+                        label: AppStrings.phone,
                         icon: Icons.phone,
                         keyboardType: TextInputType.phone,
                         validator: (v) =>
-                        v == null || v.trim().isEmpty ? 'Please enter a phone number' : null,
+                        v == null || v.trim().isEmpty ? AppStrings.enterPhone : null,
                       ),
                     ],
                   ),
@@ -132,23 +136,27 @@ class _ContactDetailViewState extends State<ContactDetailView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Custom Fields',
-                      style: TextStyle(
+                      AppStrings.customFields,
+                      style: AppTextStyles.sectionTitle.copyWith(
                         fontSize: ScreenUtilHelper.fontSize(20),
-                        fontWeight: FontWeight.w700,
-                        color: Colors.deepPurple,
                       ),
                     ),
                     OutlinedButton.icon(
                       onPressed: _addCustomField,
-                      icon: Icon(Icons.add,
-                          color: Colors.deepPurple, size: ScreenUtilHelper.fontSize(20)),
-                      label: Text('Add Field',
-                          style: TextStyle(
-                              color: Colors.deepPurple,
-                              fontSize: ScreenUtilHelper.fontSize(16))),
+                      icon: Icon(
+                        Icons.add,
+                        color: AppColors.primary,
+                        size: ScreenUtilHelper.fontSize(20),
+                      ),
+                      label: Text(
+                        AppStrings.addField,
+                        style: AppTextStyles.bodyText2.copyWith(
+                          color: AppColors.primary,
+                          fontSize: ScreenUtilHelper.fontSize(16),
+                        ),
+                      ),
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.deepPurple),
+                        side: BorderSide(color: AppColors.primary),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(12)),
                         ),
@@ -159,15 +167,15 @@ class _ContactDetailViewState extends State<ContactDetailView> {
 
                 SizedBox(height: ScreenUtilHelper.height(20)),
 
-                // Custom fields inputs in card style
+                // Custom fields card
                 Container(
                   padding: EdgeInsets.all(ScreenUtilHelper.width(16)),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.card,
                     borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(18)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
+                        color: AppColors.shadow.withOpacity(0.1),
                         blurRadius: ScreenUtilHelper.scaleAll(10),
                         offset: Offset(0, ScreenUtilHelper.height(4)),
                       )
@@ -185,10 +193,10 @@ class _ContactDetailViewState extends State<ContactDetailView> {
                               flex: 3,
                               child: RoundedInputField(
                                 initialValue: key,
-                                label: 'Field Name',
+                                label: AppStrings.fieldName,
                                 onChanged: (v) => _updateCustomKey(key, v),
                                 validator: (v) =>
-                                v == null || v.trim().isEmpty ? 'Required' : null,
+                                v == null || v.trim().isEmpty ? AppStrings.requiredField : null,
                               ),
                             ),
                             SizedBox(width: ScreenUtilHelper.width(12)),
@@ -196,10 +204,10 @@ class _ContactDetailViewState extends State<ContactDetailView> {
                               flex: 4,
                               child: RoundedInputField(
                                 initialValue: value,
-                                label: 'Value',
+                                label: AppStrings.value,
                                 onChanged: (v) => _updateCustomValue(key, v),
                                 validator: (v) =>
-                                v == null || v.trim().isEmpty ? 'Required' : null,
+                                v == null || v.trim().isEmpty ? AppStrings.requiredField : null,
                               ),
                             ),
                             SizedBox(width: ScreenUtilHelper.width(8)),
@@ -207,9 +215,12 @@ class _ContactDetailViewState extends State<ContactDetailView> {
                               onTap: () => _removeCustomField(key),
                               child: CircleAvatar(
                                 radius: ScreenUtilHelper.radius(18),
-                                backgroundColor: Colors.redAccent,
-                                child: Icon(Icons.close,
-                                    color: Colors.white, size: ScreenUtilHelper.fontSize(20)),
+                                backgroundColor: AppColors.danger,
+                                child: Icon(
+                                  Icons.close,
+                                  color: AppColors.background,
+                                  size: ScreenUtilHelper.fontSize(20),
+                                ),
                               ),
                             ),
                           ],
@@ -226,10 +237,11 @@ class _ContactDetailViewState extends State<ContactDetailView> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      backgroundColor: Colors.deepPurple,
+                      backgroundColor: AppColors.primary,
                       padding: EdgeInsets.symmetric(vertical: ScreenUtilHelper.height(16)),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(14))),
+                        borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(14)),
+                      ),
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -243,10 +255,9 @@ class _ContactDetailViewState extends State<ContactDetailView> {
                       }
                     },
                     child: Text(
-                      'Update Contact',
-                      style: TextStyle(
+                      AppStrings.updateContact,
+                      style: AppTextStyles.buttonText.copyWith(
                         fontSize: ScreenUtilHelper.fontSize(20),
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),

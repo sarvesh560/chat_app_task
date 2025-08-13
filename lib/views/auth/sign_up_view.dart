@@ -5,17 +5,24 @@ import 'package:image_picker/image_picker.dart';
 import '../../controllers/auth_controller.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_textstyles.dart';
+import '../../core/app_strings.dart';
+import '../../core/app_values.dart';
 import '../../core/screen_util_helper.dart';
 import '../../widges/rounded_input_field_widgets.dart';
 
-class SignupView extends StatelessWidget {
+class SignupView extends StatefulWidget {
+  const SignupView({Key? key}) : super(key: key);
+
+  @override
+  State<SignupView> createState() => _SignupViewState();
+}
+
+class _SignupViewState extends State<SignupView> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController nameC = TextEditingController();
   final TextEditingController emailC = TextEditingController();
   final TextEditingController passC = TextEditingController();
   final Rx<File?> selectedImage = Rx<File?>(null);
-
-  SignupView({Key? key}) : super(key: key);
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
@@ -26,8 +33,15 @@ class SignupView extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    nameC.dispose();
+    emailC.dispose();
+    passC.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final authC = Get.find<AuthController>();
 
     return Scaffold(
@@ -43,14 +57,14 @@ class SignupView extends StatelessWidget {
         child: Center(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
-              horizontal: ScreenUtilHelper.width(32),
-              vertical: ScreenUtilHelper.height(40),
+              horizontal: ScreenUtilHelper.width(AppValues.paddingXLarge),
+              vertical: ScreenUtilHelper.height(AppValues.paddingXLarge),
             ),
             child: Container(
-              padding: EdgeInsets.all(ScreenUtilHelper.width(24)),
+              padding: EdgeInsets.all(ScreenUtilHelper.width(AppValues.paddingLarge)),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.95),
-                borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(16)),
+                borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(AppValues.borderRadiusLarge)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black26,
@@ -64,69 +78,71 @@ class SignupView extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Create Account', style: AppTextStyles.titleLarge),
-                    SizedBox(height: ScreenUtilHelper.height(24)),
+                    Text(AppStrings.createAccount, style: AppTextStyles.titleLarge),
+                    SizedBox(height: ScreenUtilHelper.height(AppValues.paddingLarge)),
 
                     Obx(() => GestureDetector(
                       onTap: pickImage,
                       child: CircleAvatar(
-                        radius: ScreenUtilHelper.radius(45),
+                        radius: ScreenUtilHelper.radius(AppValues.avatarRadius),
                         backgroundColor: Colors.grey[300],
                         backgroundImage: selectedImage.value != null
                             ? FileImage(selectedImage.value!)
                             : null,
                         child: selectedImage.value == null
-                            ? Icon(Icons.camera_alt,
-                            size: ScreenUtilHelper.fontSize(40),
-                            color: Colors.grey)
+                            ? Icon(
+                          Icons.camera_alt,
+                          size: ScreenUtilHelper.fontSize(AppValues.fontSizeXXLarge),
+                          color: Colors.grey,
+                        )
                             : null,
                       ),
                     )),
-                    SizedBox(height: ScreenUtilHelper.height(24)),
+                    SizedBox(height: ScreenUtilHelper.height(AppValues.paddingLarge)),
 
                     RoundedInputField(
                       controller: nameC,
-                      label: 'Name',
+                      label: AppStrings.name,
                       icon: Icons.person_outline,
-                      validator: (v) => v == null || v.isEmpty ? 'Enter name' : null,
+                      validator: (v) => v == null || v.isEmpty ? AppStrings.enterName : null,
                     ),
-                    SizedBox(height: ScreenUtilHelper.height(16)),
+                    SizedBox(height: ScreenUtilHelper.height(AppValues.paddingMedium)),
 
                     RoundedInputField(
                       controller: emailC,
-                      label: 'Email',
+                      label: AppStrings.email,
                       icon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Enter email';
-                        if (!GetUtils.isEmail(v)) return 'Enter valid email';
+                        if (v == null || v.isEmpty) return AppStrings.enterEmail;
+                        if (!GetUtils.isEmail(v)) return AppStrings.enterValidSignupEmail;
                         return null;
                       },
                     ),
-                    SizedBox(height: ScreenUtilHelper.height(16)),
+                    SizedBox(height: ScreenUtilHelper.height(AppValues.paddingMedium)),
 
                     RoundedInputField(
                       controller: passC,
-                      label: 'Password',
+                      label: AppStrings.password,
                       icon: Icons.lock_outline,
                       obscureText: true,
-                      validator: (v) => v == null || v.length < 6 ? 'Min 6 characters' : null,
+                      validator: (v) => v == null || v.length < 6 ? AppStrings.enterPassword : null,
                     ),
-                    SizedBox(height: ScreenUtilHelper.height(32)),
+                    SizedBox(height: ScreenUtilHelper.height(AppValues.paddingXLarge)),
 
                     Obx(() => authC.isLoading.value
-                        ? CircularProgressIndicator()
+                        ? const CircularProgressIndicator()
                         : SizedBox(
                       width: double.infinity,
-                      height: ScreenUtilHelper.height(50),
+                      height: ScreenUtilHelper.height(AppValues.buttonHeight),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(12)),
-                          ),
-                          elevation: 6,
                           backgroundColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(AppValues.borderRadiusMedium)),
+                          ),
+                          elevation: AppValues.buttonElevation,
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
@@ -138,27 +154,27 @@ class SignupView extends StatelessWidget {
                             );
                           }
                         },
-                        child: Text('Sign Up', style: AppTextStyles.buttonText),
+                        child: Text(AppStrings.signUp, style: AppTextStyles.buttonText),
                       ),
                     )),
 
-                    SizedBox(height: ScreenUtilHelper.height(16)),
+                    SizedBox(height: ScreenUtilHelper.height(AppValues.paddingMedium)),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          "Already have an account? ",
-                          style: TextStyle(
+                        Text(
+                          AppStrings.alreadyHaveAccount,
+                          style: const TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         GestureDetector(
                           onTap: () => Get.back(),
-                          child: const Text(
-                            'Sign In',
-                            style: TextStyle(
+                          child: Text(
+                            AppStrings.signIn,
+                            style: const TextStyle(
                               color: AppColors.secondary,
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,

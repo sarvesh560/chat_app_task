@@ -11,5 +11,6 @@ class AppColors {
   static const Color danger = Colors.redAccent;
   static const Color inputFill = Color(0xFFF0F0F0);
   static const Color error = Colors.redAccent;
+  static const Color textMuted = Colors.black54;
 
 }

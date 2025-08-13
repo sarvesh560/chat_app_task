@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/contact_controller.dart';
+import '../../core/app_colors.dart';
+import '../../core/app_textstyles.dart';
+import '../../core/app_strings.dart';
 import '../../core/screen_util_helper.dart';
 import 'add_contact_view.dart';
 import 'contact_detail_view.dart';
@@ -10,18 +13,19 @@ class ContactsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final contactsC = Get.put(ContactsController());
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: AppColors.greyLight,
       appBar: AppBar(
         title: Text(
-          'My Contacts',
-          style: TextStyle(fontSize: ScreenUtilHelper.fontSize(20)),
+          AppStrings.myContacts,
+          style: AppTextStyles.titleLarge.copyWith(
+            fontSize: ScreenUtilHelper.fontSize(20),
+          ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: AppColors.primary,
         elevation: ScreenUtilHelper.scaleAll(4),
       ),
       body: SafeArea(
@@ -29,14 +33,15 @@ class ContactsListView extends StatelessWidget {
           if (contactsC.contacts.isEmpty) {
             return Center(
               child: Text(
-                'No contacts available',
-                style: TextStyle(
+                AppStrings.noContactsAvailable,
+                style: AppTextStyles.bodyText2.copyWith(
                   fontSize: ScreenUtilHelper.fontSize(16),
-                  color: Colors.grey,
+                  color: AppColors.textMuted,
                 ),
               ),
             );
           }
+
           return ListView.builder(
             padding: EdgeInsets.all(ScreenUtilHelper.width(12)),
             itemCount: contactsC.contacts.length,
@@ -44,9 +49,12 @@ class ContactsListView extends StatelessWidget {
               final contact = contactsC.contacts[index];
 
               return Card(
-                margin: EdgeInsets.symmetric(vertical: ScreenUtilHelper.height(6)),
+                margin: EdgeInsets.symmetric(
+                  vertical: ScreenUtilHelper.height(6),
+                ),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(12))),
+                  borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(12)),
+                ),
                 elevation: ScreenUtilHelper.scaleAll(2),
                 child: ListTile(
                   contentPadding: EdgeInsets.symmetric(
@@ -55,32 +63,34 @@ class ContactsListView extends StatelessWidget {
                   ),
                   leading: CircleAvatar(
                     radius: ScreenUtilHelper.radius(28),
-                    backgroundColor: Colors.deepPurple.shade200,
+                    backgroundColor: AppColors.deepPurpleLight,
                     child: Text(
                       contact.name.isNotEmpty ? contact.name[0].toUpperCase() : '?',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      style: AppTextStyles.avatarInitial.copyWith(
                         fontSize: ScreenUtilHelper.fontSize(24),
+                        color: AppColors.card,
                       ),
                     ),
                   ),
                   title: Text(
                     contact.name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                    style: AppTextStyles.listTitle.copyWith(
                       fontSize: ScreenUtilHelper.fontSize(18),
-                      color: Colors.black87,
                     ),
                   ),
                   subtitle: Text(
                     contact.email,
-                    style: TextStyle(color: Colors.black54),
+                    style: AppTextStyles.bodyText2.copyWith(
+                      color: AppColors.textMuted,
+                    ),
                   ),
                   trailing: IconButton(
-                    icon: Icon(Icons.delete_outline,
-                        color: Colors.redAccent, size: ScreenUtilHelper.fontSize(28)),
-                    tooltip: 'Delete Contact',
+                    icon: Icon(
+                      Icons.delete_outline,
+                      color: AppColors.danger,
+                      size: ScreenUtilHelper.fontSize(28),
+                    ),
+                    tooltip: AppStrings.deleteContact,
                     onPressed: () => contactsC.deleteContact(contact.id),
                   ),
                   onTap: () => Get.to(() => ContactDetailView(contact: contact)),
@@ -91,12 +101,15 @@ class ContactsListView extends StatelessWidget {
         }),
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: 'Add contact',
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.deepPurple,
+        heroTag: AppStrings.addContactFabTag,
+        foregroundColor: AppColors.card,
+        backgroundColor: AppColors.primary,
+        tooltip: AppStrings.addNewContact,
         onPressed: () => Get.to(() => AddContactView()),
-        tooltip: 'Add New Contact',
-        child: Icon(Icons.add, size: ScreenUtilHelper.fontSize(30)),
+        child: Icon(
+          Icons.add,
+          size: ScreenUtilHelper.fontSize(30),
+        ),
       ),
     );
   }

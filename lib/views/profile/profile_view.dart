@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../controllers/auth_controller.dart';
+import '../../core/app_colors.dart';
+import '../../core/app_textstyles.dart';
 import '../../core/screen_util_helper.dart';
 
 class ProfileView extends StatefulWidget {
@@ -19,7 +21,8 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    final pickedFile =
+    await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
     if (pickedFile != null) {
       newImage.value = File(pickedFile.path);
       await _updateProfile();
@@ -31,26 +34,33 @@ class _ProfileViewState extends State<ProfileView> {
 
     if (user != null) {
       await authC.updateProfile(
-        name: nameController.text.trim().isEmpty ? user.name : nameController.text.trim(),
+        name: nameController.text.trim().isEmpty
+            ? user.name
+            : nameController.text.trim(),
         newImage: newImage.value,
       );
-      Get.snackbar("Success", "Profile updated", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar("Success", "Profile updated",
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor: AppColors.greyLight,
       appBar: AppBar(
         title: Text(
           "My Profile",
-          style: TextStyle(fontSize: ScreenUtilHelper.fontSize(18)),
+          style: AppTextStyles.titleLarge.copyWith(
+            fontSize: ScreenUtilHelper.fontSize(18),
+          ),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: AppColors.primary,
         actions: [
           IconButton(
-            icon: Icon(Icons.logout, color: Colors.white, size: ScreenUtilHelper.fontSize(22)),
+            icon: Icon(Icons.logout,
+                color: AppColors.card,
+                size: ScreenUtilHelper.fontSize(22)),
             onPressed: authC.signOut,
           ),
         ],
@@ -62,7 +72,9 @@ class _ProfileViewState extends State<ProfileView> {
           return Center(
             child: Text(
               'No user logged in',
-              style: TextStyle(fontSize: ScreenUtilHelper.fontSize(16)),
+              style: AppTextStyles.bodyText2.copyWith(
+                fontSize: ScreenUtilHelper.fontSize(16),
+              ),
             ),
           );
         }
@@ -79,7 +91,7 @@ class _ProfileViewState extends State<ProfileView> {
               borderRadius: BorderRadius.circular(ScreenUtilHelper.radius(24)),
             ),
             elevation: ScreenUtilHelper.height(8),
-            shadowColor: Colors.deepPurple.withOpacity(0.3),
+            shadowColor: AppColors.primary.withOpacity(0.3),
             child: Padding(
               padding: EdgeInsets.all(ScreenUtilHelper.width(28)),
               child: Column(
@@ -89,16 +101,20 @@ class _ProfileViewState extends State<ProfileView> {
                     children: [
                       Obx(() => CircleAvatar(
                         radius: ScreenUtilHelper.radius(65),
-                        backgroundColor: Colors.deepPurple.shade100,
+                        backgroundColor: AppColors.deepPurpleLight,
                         backgroundImage: newImage.value != null
                             ? FileImage(newImage.value!)
                             : (user.profileImage != null
                             ? NetworkImage(user.profileImage!)
-                            : null) as ImageProvider<Object>?,
-                        child: (newImage.value == null && user.profileImage == null)
-                            ? Icon(Icons.person,
-                            size: ScreenUtilHelper.fontSize(70),
-                            color: Colors.deepPurple)
+                            : null)
+                        as ImageProvider<Object>?,
+                        child: (newImage.value == null &&
+                            user.profileImage == null)
+                            ? Icon(
+                          Icons.person,
+                          size: ScreenUtilHelper.fontSize(70),
+                          color: AppColors.primary,
+                        )
                             : null,
                       )),
                       Positioned(
@@ -108,10 +124,10 @@ class _ProfileViewState extends State<ProfileView> {
                           onTap: pickImage,
                           child: CircleAvatar(
                             radius: ScreenUtilHelper.radius(22),
-                            backgroundColor: Colors.deepPurple,
+                            backgroundColor: AppColors.primary,
                             child: Icon(Icons.camera_alt,
                                 size: ScreenUtilHelper.fontSize(22),
-                                color: Colors.white),
+                                color: AppColors.card),
                           ),
                         ),
                       )
@@ -121,18 +137,20 @@ class _ProfileViewState extends State<ProfileView> {
                   TextField(
                     controller: nameController,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: AppTextStyles.titleLarge.copyWith(
                       fontSize: ScreenUtilHelper.fontSize(24),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
+                      color: AppColors.primary,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Your Name',
-                      hintStyle: TextStyle(fontSize: ScreenUtilHelper.fontSize(18)),
+                      hintStyle: AppTextStyles.bodyText2.copyWith(
+                        fontSize: ScreenUtilHelper.fontSize(18),
+                      ),
                       border: InputBorder.none,
                       suffixIcon: IconButton(
                         icon: Icon(Icons.clear,
-                            color: Colors.grey, size: ScreenUtilHelper.fontSize(20)),
+                            color: Colors.grey,
+                            size: ScreenUtilHelper.fontSize(20)),
                         onPressed: () => nameController.clear(),
                       ),
                     ),
@@ -140,9 +158,9 @@ class _ProfileViewState extends State<ProfileView> {
                   SizedBox(height: ScreenUtilHelper.height(12)),
                   Text(
                     user.email,
-                    style: TextStyle(
+                    style: AppTextStyles.bodyText2.copyWith(
                       fontSize: ScreenUtilHelper.fontSize(16),
-                      color: Colors.deepPurple.shade400,
+                      color: AppColors.primary.withOpacity(0.7),
                       fontWeight: FontWeight.w500,
                     ),
                   ),

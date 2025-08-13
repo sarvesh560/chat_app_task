@@ -49,7 +49,7 @@ class AppTextStyles {
   static const TextStyle avatarInitial = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.bold,
-    color: Color(0xFF6A11CB), // same as primary
+    color: Color(0xFF6A11CB),
   );
 
   static const TextStyle sectionTitle = TextStyle(
